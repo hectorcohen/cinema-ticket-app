@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {View, Text, Button } from 'react-native'
+import {View, Text, Button, StyleSheet } from 'react-native'
 import {fetchMovies} from "../../requests";
 import {useDispatch} from "react-redux";
 
@@ -12,8 +12,17 @@ export default function Signup({navigation}) {
 	}, [])
 
 	return (
-		<View>
+		<View style={styles.container}>
+			<Text>Soy la pantalla de Signup</Text>
 			<Button title="Movies" onPress={() => navigation.navigate('Movies')}/>
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container:{
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	}
+})
