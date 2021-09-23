@@ -20,41 +20,45 @@ export default  function Movies() {
 	const {movies} = useSelector(state => state.movies)
 
 	return (
-			<View style={styles.container}>
-				<Text>Hello world</Text>
-				<Animated.FlatList
-					data={movies}
-					horizontal
-					bounces={false}
-					contentContainerStyle={{ marginVertical: 60 }}
-					decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
-					keyExtractor={(item) => item.key}
-					renderItem={({item}) => {
-						return (
-							<Animated.View style={{width: ITEM_SIZE}}>
-								<View style={{
-									marginHorizontal: SPACING,
-									padding: 10 * 2,
-									alignItems: 'center',
-									backgroundColor: 'white',
-									borderRadius: 34
-								}}>
-									<Image
-										style={styles.posterImage}
-										source={{uri: item.poster}}
-									/>
-									<Text style={{ fontSize: 24 }} numberOfLines={1}>
-										{item.title}
-									</Text>
-									<Text style={{ fontSize: 12 }} numberOfLines={3}>
-										{item.description}
-									</Text>
-								</View>
-							</Animated.View>
-						)
-					}}
-				/>
-			</View>
+		<View>
+			<Animated.FlatList
+				data={movies}
+				horizontal
+				bounces={false}
+				contentContainerStyle={{ marginVertical: 60 }}
+				decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
+				showsHorizontalScrollIndicator={false}
+				keyExtractor={(item) => item.key}
+				renderItem={({item}) => {
+					return (
+						<Animated.View style={{width: ITEM_SIZE}}>
+							<View style={{
+								borderColor: 'red',
+								borderWidth: 1,
+								width: 300,
+								height: 700,
+								marginHorizontal: SPACING,
+								padding: 10 * 2,
+								alignItems: 'center',
+								backgroundColor: 'white',
+								borderRadius: 34
+							}}>
+								<Image
+									style={styles.posterImage}
+									source={{uri: item.poster}}
+								/>
+								<Text style={{ fontSize: 24 }} numberOfLines={1}>
+									{item.title}
+								</Text>
+								<Text style={{ fontSize: 12 }} numberOfLines={3}>
+									{item.description}
+								</Text>
+							</View>
+						</Animated.View>
+					)
+				}}
+			/>
+		</View>
 	)
 }
 
