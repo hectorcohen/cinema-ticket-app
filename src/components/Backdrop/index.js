@@ -1,58 +1,76 @@
 import React from 'react'
-import {View, Text, FlatList, Dimensions, Platform, Animated, Image, LinearGradient} from "react-native";
+import {View, Dimensions,FlatList, Animated, Image} from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-community/masked-view'
+import Svg, {Rect} from 'react-native-svg'
 
-const {height, width} = Dimensions.get('window')
-const BACKDROP_HEIGHT = height * 0.65;
-const ITEM_SIZE = Platform.OS === 'ios' ? width * 0.72 : width * 0.74;
+const {width, height} = Dimensions.get('window');
+const ITEM_SIZE = width * 0.72;
+const BACKDROP_HEIGHT = height * 0.6;
+
+const AnimatedSvg = Animated.createAnimatedComponent(Svg)
 
 export default function Backdrop({movies, scrollX}){
 	return (
-		<View style={{ height: BACKDROP_HEIGHT, width, position: 'absolute' }}>
+		<View style={{position: 'absolute', width, height: BACKDROP_HEIGHT}}>
 			<FlatList
-				data={movies.reverse()}
-				keyExtractor={(item) => item.key + '-backdrop'}
+				data={movies}
+				keyExtractor={item => item.key + '-backdrop'}
 				removeClippedSubviews={false}
 				contentContainerStyle={{ width, height: BACKDROP_HEIGHT }}
-				renderItem={({ item, index }) => {
-					if (!item.backdrop) {
-						return null;
+				inverted={true}
+				renderItem={({item, index})=> {
+
+
+					if(!item.backdrop){
+						console.log(item)
 					}
+
+					const inputRange = [
+						(index - 2) * ITEM_SIZE,
+						(index - 1) * ITEM_SIZE
+					]
+
 					const translateX = scrollX.interpolate({
-						inputRange: [(index - 2) * ITEM_SIZE, (index - 1) * ITEM_SIZE],
-						outputRange: [0, width],
-						// extrapolate:'clamp'
-					});
+						inputRange,
+						outputRange:[-width, 0]
+					})
 					return (
-						<Animated.View
-							removeClippedSubviews={false}
-							style={{
-								position: 'absolute',
-								width: translateX,
-								height,
-								overflow: 'hidden',
-							}}
-						>
-							<Image
-								source={{ uri: item.backdrop }}
-								style={{
-									width,
-									height: BACKDROP_HEIGHT,
-									position: 'absolute',
-								}}
-							/>
-						</Animated.View>
-					);
+						<View style={{ height: BACKDROP_HEIGHT, width, position: 'absolute' }}>
+							<MaskedView
+								style={{position: 'absolute'}}
+								maskElement={
+									<AnimatedSvg
+										width={width}
+										height={height}
+										viewBox={`0 0 ${width} ${height}`}
+										style={{transform: [{translateX}]}}
+									>
+										<Rect
+											x="0"
+											y="0"
+											width={width}
+											height={height}
+											fill='red'
+										/>
+									</AnimatedSvg>
+								}
+							>
+								<Image
+									source={{uri: item.backdrop}}
+									style={{width, height: BACKDROP_HEIGHT, resizeMode: 'cover'}}
+								/>
+							</MaskedView>
+						</View>
+					)
 				}}
 			/>
-			<LinearGradient
-				colors={['rgba(0, 0, 0, 0)', 'white']}
-				style={{
-					height: BACKDROP_HEIGHT,
-					width,
-					position: 'absolute',
-					bottom: 0,
-				}}
-			/>
+			<LinearGradient colors={['transparent', 'white']} style={{
+				width,
+				height: BACKDROP_HEIGHT,
+				position: 'absolute',
+				bottom: 0
+			}}/>
 		</View>
 	)
 }

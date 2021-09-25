@@ -1,6 +1,7 @@
 import React, {useRef} from 'react'
 import {View, FlatList, Text, StyleSheet, StatusBar, Dimensions, Image, Animated} from 'react-native'
 import {useSelector} from 'react-redux'
+import Backdrop from "../../components/Backdrop";
 
 
 
@@ -10,18 +11,16 @@ const ITEM_SIZE = width * 0.72;
 const SPACER_ITEM_SIZE = (width - ITEM_SIZE) / 2
 
 
-
-
 export default function Movies(){
 
 	const {movies} = useSelector(state => state.movies)
 	const MOVIES = [{key: 'left-spacer'}, ...movies, {key: 'right-spacer'}]
 	const scrollX = useRef(new Animated.Value(0)).current;
-	console.log(movies)
-
 
 	return (
 		<View style={styles.container}>
+			<Backdrop movies={MOVIES} scrollX={scrollX}/>
+			<StatusBar hidden />
 			<Animated.FlatList
 				showsHorizontalScrollIndicator={false}
 				data={MOVIES}
@@ -54,7 +53,7 @@ export default function Movies(){
 
 					const translateY = scrollX.interpolate({
 						inputRange,
-						outputRange: [0, -50, 0]
+						outputRange: [100, 50, 100]
 					})
 
 					return (
@@ -76,9 +75,6 @@ export default function Movies(){
 								<Text>
 									{item.title}
 								</Text>
-								<Text>
-									{item.description}
-								</Text>
 							</Animated.View>
 						</View>
 					)
@@ -91,8 +87,6 @@ export default function Movies(){
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
 	},
 	posterImage: {
 		width: '100%',
