@@ -1,60 +1,86 @@
 import React, {useRef} from 'react'
-import {View,
-	Text,
-	StyleSheet,
-	StatusBar,
-	FlatList,
-	Image,
-	Animated,
-	Dimensions,
-	Platform,
-	SafeAreaView
-} from 'react-native'
-import {useSelector} from "react-redux";
+import {View, FlatList, Text, StyleSheet, StatusBar, Dimensions, Image, Animated} from 'react-native'
+import {useSelector} from 'react-redux'
+
+
+
+const {width, height} = Dimensions.get('window');
 const SPACING = 10;
-const { width } = Dimensions.get('window');
-const ITEM_SIZE = Platform.OS === 'ios' ? width * 0.72 : width * 0.74;
+const ITEM_SIZE = width * 0.72;
+const SPACER_ITEM_SIZE = (width - ITEM_SIZE) / 2
 
 
-export default  function Movies() {
+
+
+export default function Movies(){
+
 	const {movies} = useSelector(state => state.movies)
+	const MOVIES = [{key: 'left-spacer'}, ...movies, {key: 'right-spacer'}]
+	const scrollX = useRef(new Animated.Value(0)).current;
+	console.log(movies)
+
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Animated.FlatList
-				data={movies}
-				horizontal
-				bounces={false}
-				contentContainerStyle={{ marginVertical: 60 }}
-				decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
 				showsHorizontalScrollIndicator={false}
-				keyExtractor={(item) => item.key}
-				renderItem={({item}) => {
+				data={MOVIES}
+				keyExtractor={item => item.key}
+				horizontal
+				contentContainerStyle={{
+					alignItems: 'center'
+				}}
+				snapToInterval={ITEM_SIZE}
+				decelerationRate={0}
+				bounces={false}
+				onScroll={Animated.event(
+					[{nativeEvent: {contentOffset: {x: scrollX}}}],
+					{useNativeDriver: true}
+				)}
+				scrollEventThrottle={16}
+				renderItem={({item, index}) => {
+
+					if(!item.poster){
+						return <View  style={{
+							width: SPACER_ITEM_SIZE,
+						}}/>
+					}
+
+					const inputRange = 	[
+						(index - 2) * ITEM_SIZE,
+						(index - 1) * ITEM_SIZE,
+						index * ITEM_SIZE,
+					]
+
+					const translateY = scrollX.interpolate({
+						inputRange,
+						outputRange: [0, -50, 0]
+					})
+
 					return (
-						<Animated.View style={{width: ITEM_SIZE}}>
-							<View style={{
-								borderColor: 'red',
-								borderWidth: 1,
-								width: 300,
-								height: 700,
-								marginHorizontal: SPACING,
-								padding: 10 * 2,
-								alignItems: 'center',
-								backgroundColor: 'white',
-								borderRadius: 34
-							}}>
+						<View style={{width: ITEM_SIZE}}>
+							<Animated.View
+								style={{
+									marginHorizontal: SPACING,
+									padding: SPACING * 2,
+									alignItems: 'center',
+									backgroundColor: 'white',
+									borderRadius: 20,
+									transform: [{ translateY}]
+								}}
+							>
 								<Image
 									style={styles.posterImage}
 									source={{uri: item.poster}}
 								/>
-								<Text style={{ fontSize: 24 }} numberOfLines={1}>
+								<Text>
 									{item.title}
 								</Text>
-								<Text style={{ fontSize: 12 }} numberOfLines={3}>
+								<Text>
 									{item.description}
 								</Text>
-							</View>
-						</Animated.View>
+							</Animated.View>
+						</View>
 					)
 				}}
 			/>
@@ -65,8 +91,10 @@ export default  function Movies() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
-	posterImage:{
+	posterImage: {
 		width: '100%',
 		height: ITEM_SIZE * 1.2,
 		resizeMode: 'cover',

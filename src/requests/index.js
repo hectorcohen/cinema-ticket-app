@@ -32,7 +32,7 @@ const getBackdropPath = (path) =>
 
 export const fetchMovies = createAsyncThunk('fetch/movies', async()=>{
 	const {data} = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc`)
-	const movies = data.results.map(
+	return data.results.map(
 		({
 			 id,
 			 original_title,
@@ -53,6 +53,4 @@ export const fetchMovies = createAsyncThunk('fetch/movies', async()=>{
 			genres: genre_ids.map((genre) => genres[genre])
 		})
 	)
-
-	return movies
 })
