@@ -6,7 +6,8 @@ const moviesSlice = createSlice({
 	initialState: {
 		movies: [],
 		loaded: false,
-		movieModal: false
+		movieModal: false,
+		movieModalData : {}
 	},
 	reducers: {
 		getValue: (state, action) => {
@@ -15,6 +16,10 @@ const moviesSlice = createSlice({
 		setMovieModal: (state, {payload}) => {
 			/*open and close modal with only one function*/
 			state.movieModal  = payload
+		},
+		setMovieModalData : (state, {payload}) => {
+			/*this is the movie data*/
+			state.movieModalData = payload
 		}
 	},
 	extraReducers: {
@@ -28,5 +33,5 @@ const moviesSlice = createSlice({
 	}
 })
 
-export const {  getValue, setMovieModal } = moviesSlice.actions
+export const {  getValue, setMovieModal, setMovieModalData } = moviesSlice.actions
 export default moviesSlice.reducer

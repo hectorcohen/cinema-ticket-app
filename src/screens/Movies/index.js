@@ -19,9 +19,11 @@ export default function Movies(){
 	const MOVIES = [{key: 'left-spacer'}, ...movies, {key: 'right-spacer'}]
 	const scrollX = useRef(new Animated.Value(0)).current;
 
+
+
+
 	return (
 		<View style={styles.container}>
-			<MovieModal visible={movieModal}/>
 			<Backdrop movies={MOVIES} scrollX={scrollX}/>
 			<StatusBar hidden />
 			<Animated.FlatList
@@ -61,6 +63,7 @@ export default function Movies(){
 
 					return (
 						<View style={{width: ITEM_SIZE}}>
+							<MovieModal visible={movieModal} movieData={item}/>
 							<Animated.View
 								style={{
 									marginHorizontal: SPACING,
@@ -70,15 +73,15 @@ export default function Movies(){
 									borderRadius: 20,
 									transform: [{ translateY}]
 								}}
-								onPress={() => console.log('press')}
 							>
 								<Image
-									onPress={() => console.log('press')}
 									style={styles.posterImage}
 									source={{uri: item.poster}}
 								/>
 								<Text
-									onPress={() => console.log('press')}
+									numberOfLines={1}
+									style={{fontSize: 15, fontWeight: 'bold'}}
+									onPress={() => execute(setMovieModal(true))}
 								>
 									{item.title}
 								</Text>
