@@ -23,7 +23,7 @@ export default function Backdrop({movies, scrollX}){
 
 
 					if(!item.backdrop){
-						console.log(item)
+						return null
 					}
 
 					const inputRange = [
