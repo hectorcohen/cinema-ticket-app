@@ -1,17 +1,17 @@
 import React, {useRef} from 'react'
-import {View, FlatList, Text, StyleSheet, StatusBar, Dimensions, Image, Animated, TouchableOpacity} from 'react-native'
-import {useSelector, useDispatch} from 'react-redux'
+import {Animated, Dimensions, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {useDispatch, useSelector} from 'react-redux'
 import Backdrop from "../../components/Backdrop";
-import MovieModal from "../../components/MovieModal";
-import {setMovieModalData, setMovieModal} from "../../store/slice/movies";
+import {setMovieModal, setMovieModalData} from "../../store/slice/movies";
+import TouchableScale from 'react-native-touchable-scale';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const SPACING = 10;
 const ITEM_SIZE = width * 0.72;
 const SPACER_ITEM_SIZE = (width - ITEM_SIZE) / 2
 
 
-export default function Movies(){
+export default function Movies({navigation}) {
 
 	const {movies, movieModal} = useSelector(state => state.movies)
 	const execute = useDispatch()
@@ -28,7 +28,7 @@ export default function Movies(){
 	return (
 		<View style={styles.container}>
 			<Backdrop movies={MOVIES} scrollX={scrollX}/>
-			<StatusBar hidden />
+			<StatusBar hidden/>
 			<Animated.FlatList
 				showsHorizontalScrollIndicator={false}
 				data={MOVIES}
@@ -47,13 +47,13 @@ export default function Movies(){
 				scrollEventThrottle={16}
 				renderItem={({item, index}) => {
 
-					if(!item.poster){
-						return <View  style={{
+					if (!item.poster) {
+						return <View style={{
 							width: SPACER_ITEM_SIZE,
 						}}/>
 					}
 
-					const inputRange = 	[
+					const inputRange = [
 						(index - 2) * ITEM_SIZE,
 						(index - 1) * ITEM_SIZE,
 						index * ITEM_SIZE,
@@ -66,22 +66,34 @@ export default function Movies(){
 
 					return (
 						<View style={{width: ITEM_SIZE}}>
-							<MovieModal visible={movieModal} />
-							<TouchableOpacity onPress={() => handleExecutes(item)}>
+							<TouchableScale
+								onPress={() => navigation.navigate('MoviesDetails', {item})}
+								activeScale={0.9}
+								tension={20}
+								friction={7}
+							>
 								<Animated.View
 									style={{
 										marginHorizontal: SPACING,
 										padding: SPACING * 2,
 										alignItems: 'center',
 										backgroundColor: 'white',
-										borderRadius: 20,
-										transform: [{ translateY}]
+										shadowOffset: {
+											width: 0,
+											height: 4,
+										},
+										shadowOpacity: 0.30,
+										shadowRadius: 4.65,
+
+										elevation: 8,
+										borderRadius: 10,
+										transform: [{translateY}]
 									}}
 								>
 									<Image
 										style={styles.posterImage}
 										source={{uri: item.poster}}
-										onPress={() => console.log('te estoy presionando')}
+										onPress={() => console.log('I´m press now')}
 									/>
 									<Text
 										numberOfLines={1}
@@ -90,7 +102,7 @@ export default function Movies(){
 										{item.title}
 									</Text>
 								</Animated.View>
-							</TouchableOpacity>
+							</TouchableScale>
 						</View>
 					)
 				}}
@@ -107,7 +119,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: ITEM_SIZE * 1.2,
 		resizeMode: 'cover',
-		borderRadius: 24,
+		borderRadius: 10,
 		margin: 0,
 		marginBottom: 10,
 	}
