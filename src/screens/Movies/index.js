@@ -1,8 +1,7 @@
 import React, {useRef} from 'react'
-import {Animated, Dimensions, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {useDispatch, useSelector} from 'react-redux'
+import {Animated, Dimensions, Image, StatusBar, StyleSheet, Text,  View} from 'react-native'
+import {useSelector} from 'react-redux'
 import Backdrop from "../../components/Backdrop";
-import {setMovieModal, setMovieModalData} from "../../store/slice/movies";
 import TouchableScale from 'react-native-touchable-scale';
 
 const {width} = Dimensions.get('window');
@@ -13,16 +12,11 @@ const SPACER_ITEM_SIZE = (width - ITEM_SIZE) / 2
 
 export default function Movies({navigation}) {
 
-	const {movies, movieModal} = useSelector(state => state.movies)
-	const execute = useDispatch()
+	const {movies} = useSelector(state => state.movies)
 	const MOVIES = [{key: 'left-spacer'}, ...movies, {key: 'right-spacer'}]
 	const scrollX = useRef(new Animated.Value(0)).current;
 
 
-	const handleExecutes = (movie) => {
-		execute(setMovieModalData(movie))
-		execute(setMovieModal(true))
-	}
 
 
 	return (
@@ -86,7 +80,6 @@ export default function Movies({navigation}) {
 										shadowRadius: 4.65,
 
 										elevation: 8,
-										borderRadius: 10,
 										transform: [{translateY}]
 									}}
 								>
@@ -119,7 +112,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: ITEM_SIZE * 1.2,
 		resizeMode: 'cover',
-		borderRadius: 10,
 		margin: 0,
 		marginBottom: 10,
 	}
