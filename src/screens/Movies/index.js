@@ -1,10 +1,9 @@
 import React, {useRef} from 'react'
-import {View, FlatList, Text, StyleSheet, StatusBar, Dimensions, Image, Animated} from 'react-native'
+import {View, FlatList, Text, StyleSheet, StatusBar, Dimensions, Image, Animated, TouchableOpacity} from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 import Backdrop from "../../components/Backdrop";
 import MovieModal from "../../components/MovieModal";
-import {setMovieModal} from "../../store/slice/movies";
-
+import {setMovieModalData, setMovieModal} from "../../store/slice/movies";
 
 const {width, height} = Dimensions.get('window');
 const SPACING = 10;
@@ -20,6 +19,10 @@ export default function Movies(){
 	const scrollX = useRef(new Animated.Value(0)).current;
 
 
+	const handleExecutes = (movie) => {
+		execute(setMovieModalData(movie))
+		execute(setMovieModal(true))
+	}
 
 
 	return (
@@ -63,29 +66,31 @@ export default function Movies(){
 
 					return (
 						<View style={{width: ITEM_SIZE}}>
-							<MovieModal visible={movieModal} movieData={item}/>
-							<Animated.View
-								style={{
-									marginHorizontal: SPACING,
-									padding: SPACING * 2,
-									alignItems: 'center',
-									backgroundColor: 'white',
-									borderRadius: 20,
-									transform: [{ translateY}]
-								}}
-							>
-								<Image
-									style={styles.posterImage}
-									source={{uri: item.poster}}
-								/>
-								<Text
-									numberOfLines={1}
-									style={{fontSize: 15, fontWeight: 'bold'}}
-									onPress={() => execute(setMovieModal(true))}
+							<MovieModal visible={movieModal} />
+							<TouchableOpacity onPress={() => handleExecutes(item)}>
+								<Animated.View
+									style={{
+										marginHorizontal: SPACING,
+										padding: SPACING * 2,
+										alignItems: 'center',
+										backgroundColor: 'white',
+										borderRadius: 20,
+										transform: [{ translateY}]
+									}}
 								>
-									{item.title}
-								</Text>
-							</Animated.View>
+									<Image
+										style={styles.posterImage}
+										source={{uri: item.poster}}
+										onPress={() => console.log('te estoy presionando')}
+									/>
+									<Text
+										numberOfLines={1}
+										style={{fontSize: 15, fontWeight: 'bold'}}
+									>
+										{item.title}
+									</Text>
+								</Animated.View>
+							</TouchableOpacity>
 						</View>
 					)
 				}}
